@@ -1,17 +1,22 @@
-{ coreutils
-, fetchFromGitHub
-, kernel
-, stdenv
-, lib
-, util-linux
+{
+  coreutils,
+  fetchFromGitHub,
+  kernel,
+  stdenv,
+  lib,
+  util-linux,
+  nix-update-script,
 }:
+stdenv.mkDerivation (finalAttrs: {
+  version = "3.8.0";
+  pname = "openrazer-${finalAttrs.version}-${kernel.version}";
 
-let
-  common = import ../../../development/python-modules/openrazer/common.nix { inherit lib fetchFromGitHub; };
-in
-stdenv.mkDerivation (common // {
-  pname = "openrazer";
-  version = "${common.version}-${kernel.version}";
+  src = fetchFromGitHub {
+    owner = "openrazer";
+    repo = "openrazer";
+    rev = "v${finalAttrs.version}";
+    hash = "sha256-eV5xDFRQi0m95pL6e2phvblUbh5GEJ1ru1a62TnbGNk=";
+  };
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
@@ -43,9 +48,21 @@ stdenv.mkDerivation (common // {
 
   enableParallelBuilding = true;
 
-  meta = common.meta // {
+  passthru.updateScript = nix-update-script { };
+
+  meta = {
+    homepage = "https://openrazer.github.io/";
     description = "Entirely open source Linux driver that allows you to manage your Razer peripherals on GNU/Linux";
+    license = with lib.licenses; gpl2Only;
+    maintainers =
+      with lib.maintainers;
+      [
+        evanjs
+        DrymarchonShaun
+      ]
+      ++ lib.teams.lumiguide.members;
     mainProgram = "razer_mount";
+    platforms = with lib.platforms; linux;
     broken = kernel.kernelOlder "4.19";
   };
 })
