@@ -1,13 +1,20 @@
-{ lib, stdenv, fetchFromGitHub, cmake, curl }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  curl,
+}:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "curlpp";
-  version = "0.8.1";
+  version = "0.8.1-unstable-2024-05-29";
+
   src = fetchFromGitHub {
     owner = "jpbarrette";
     repo = "curlpp";
-    rev = "v${version}";
-    sha256 = "1b0ylnnrhdax4kwjq64r1fk0i24n5ss6zfzf4hxwgslny01xiwrk";
+    rev = "8840ec806a75a6def9ed07845a620f6d170e5821";
+    hash = "sha256-WkYCb+830RgMrM6wRFunPxcvcziNa7qCjUqqlwlJHAk=";
   };
 
   patches = [
@@ -17,6 +24,12 @@ stdenv.mkDerivation rec {
 
   buildInputs = [ curl ];
   nativeBuildInputs = [ cmake ];
+
+  postFixup = ''
+    substituteInPlace $out/lib/pkgconfig/*.pc \
+      --replace-fail '=''${exec_prefix}//' '=/' \
+      --replace-fail '=''${prefix}//' '=/'
+  '';
 
   meta = with lib; {
     homepage = "https://www.curlpp.org/";
