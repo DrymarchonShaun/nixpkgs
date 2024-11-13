@@ -1,17 +1,18 @@
-{ coreutils
-, fetchFromGitHub
-, kernel
-, stdenv
-, lib
-, util-linux
+{
+  coreutils,
+  callPackage,
+  fetchFromGitHub,
+  kernel,
+  stdenv,
+  lib,
+  util-linux,
 }:
 
-let
-  common = import ../../../development/python-modules/openrazer/common.nix { inherit lib fetchFromGitHub; };
-in
-stdenv.mkDerivation (common // {
+stdenv.mkDerivation rec {
   pname = "openrazer";
-  version = "${common.version}-${kernel.version}";
+  version = "${src.version}-${kernel.version}";
+
+  src = (callPackage ../../../development/python-modules/openrazer/common.nix { }).src;
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
@@ -43,9 +44,13 @@ stdenv.mkDerivation (common // {
 
   enableParallelBuilding = true;
 
-  meta = common.meta // {
+  meta = {
     description = "Entirely open source Linux driver that allows you to manage your Razer peripherals on GNU/Linux";
+    homepage = "https://openrazer.github.io/";
+    license = lib.licenses.gpl2Only;
+    maintainers = with lib.maintainers; [ evanjs ] ++ lib.teams.lumiguide.members;
+    platforms = with lib.platforms; linux;
     mainProgram = "razer_mount";
     broken = kernel.kernelOlder "4.19";
   };
-})
+}

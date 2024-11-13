@@ -1,5 +1,6 @@
 {
   lib,
+  callPackage,
   buildPythonPackage,
   dbus-python,
   fetchFromGitHub,
@@ -8,29 +9,32 @@
   setuptools,
 }:
 
-let
-  common = import ./common.nix { inherit lib fetchFromGitHub; };
-in
-buildPythonPackage (
-  common
-  // {
-    pname = "openrazer";
+buildPythonPackage rec {
+  pname = "openrazer";
+  version = src.version;
 
-    sourceRoot = "${common.src.name}/pylib";
+  src = (callPackage ./common.nix { }).src;
 
-    nativeBuildInputs = [ setuptools ];
+  sourceRoot = "${src.name}/pylib";
 
-    propagatedBuildInputs = [
-      dbus-python
-      numpy
-      openrazer-daemon
-    ];
+  nativeBuildInputs = [ setuptools ];
 
-    # no tests run
-    doCheck = false;
+  propagatedBuildInputs = [
+    dbus-python
+    numpy
+    openrazer-daemon
+  ];
 
-    meta = common.meta // {
-      description = "Entirely open source Python library that allows you to manage your Razer peripherals on GNU/Linux";
-    };
-  }
-)
+  pyproject = true;
+
+  # no tests run
+  doCheck = false;
+
+  meta = {
+    description = "Entirely open source Python library that allows you to manage your Razer peripherals on GNU/Linux";
+    homepage = "https://openrazer.github.io/";
+    license = lib.licenses.gpl2Only;
+    maintainers = with lib.maintainers; [ evanjs ] ++ lib.teams.lumiguide.members;
+    platforms = with lib.platforms; linux;
+  };
+}
