@@ -21,7 +21,7 @@
 }:
 pkgsi686Linux.stdenv.mkDerivation (finalAttrs: {
   pname = "millennium";
-  version = "3.4.0";
+  version = "3.4.1";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -30,7 +30,7 @@ pkgsi686Linux.stdenv.mkDerivation (finalAttrs: {
     owner = "SteamClientHomebrew";
     repo = "Millennium";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-93r3Gl7CcR6xFBa6/uSSTc0YLJadP1F3elAXdl+AvKA=";
+    hash = "sha256-zgr4cdJfye4qunpD3ClNnZ9D1WPGQAXV0CnYwEbB52s=";
   };
 
   nativeBuildInputs = [
@@ -73,7 +73,7 @@ pkgsi686Linux.stdenv.mkDerivation (finalAttrs: {
 
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-Doi+Stk0pM4A+AO2q+OhiS37ctm0wRK/nde7vopI75M=";
+    outputHash = "sha256-teBEq/y0oyrDEx8GZbTeE14WIJnawylORnd/TeK8mao=";
   };
 
   millennium-64-bit-libs = stdenv.mkDerivation (finalAttrs64: {
