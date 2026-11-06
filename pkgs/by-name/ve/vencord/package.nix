@@ -22,28 +22,22 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "vencord";
-  version = "1.15.13";
+  version = "1.15.16";
 
   src = fetchFromGitHub {
     owner = "Vendicated";
     repo = "Vencord";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-YuzFkZafNJ0brt2S3gg+pm6xYXZEAjBkDH76cb0dmd8=";
+    hash = "sha256-aUJubLJpyLAZWiOezqFxPY6oVPgWVPQpajFqrJvrO9U=";
   };
 
-  patches = [ ./fix-deps.patch ];
-
-  postPatch = ''
-    substituteInPlace packages/vencord-types/package.json \
-      --replace-fail '"@types/react": "18.3.1"' '"@types/react": "19.1.0"'
-  '';
+  patches = [ ];
 
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs)
       pname
       src
       patches
-      postPatch
       ;
     inherit pnpm;
     fetcherVersion = 4;
